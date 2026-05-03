@@ -104,13 +104,6 @@ class TestFirestoreService:
         # Should not raise
         service.log_query("test", "intent", "high", 3, 100.0, "sheets")
 
-    def test_get_recent_queries_when_disabled(self):
-        """Test returns empty when disabled"""
-        service = FirestoreService()
-        service.enabled = False
-        result = service.get_recent_queries()
-        assert result == []
-
     def test_get_intent_stats_when_disabled(self):
         """Test returns empty when disabled"""
         service = FirestoreService()

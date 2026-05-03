@@ -6,8 +6,12 @@ import sys
 from datetime import datetime, timezone
 
 
-class CredentialRedactionFilter(logging.Filter):
-    """Filter to redact sensitive credentials from log messages"""
+class CredentialRedactionFilter(logging.Filter):  # pylint: disable=too-few-public-methods
+    """Filter to redact sensitive credentials from log messages
+    
+    Note: This class intentionally has only one public method (filter)
+    as required by the logging.Filter interface.
+    """
 
     # Patterns for sensitive data
     PATTERNS = [

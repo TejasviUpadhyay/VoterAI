@@ -1,4 +1,6 @@
 """Bundled fallback content for all intent categories"""
+# pylint: disable=line-too-long
+# Reason: This is a data file with long election content strings
 
 from typing import Dict
 

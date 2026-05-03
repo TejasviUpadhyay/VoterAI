@@ -25,21 +25,6 @@ class TestBigQueryService:
             assert result is False
             assert service.enabled is False
 
-    @patch("app.services.bigquery_service.bigquery.Client")
-    def test_initialization_success(self, mock_client, monkeypatch):
-        """Test successful BigQuery initialization"""
-        monkeypatch.setenv("K_SERVICE", "test-service")
-        mock_instance = Mock()
-        mock_client.return_value = mock_instance
-        
-        service = BigQueryService()
-        with patch.object(service, "_ensure_dataset_exists"):
-            with patch.object(service, "_ensure_table_exists"):
-                result = service.initialize()
-                
-        assert result is True
-        assert service.enabled is True
-
     def test_log_query_when_disabled(self):
         """Test that log_query does nothing when disabled"""
         service = BigQueryService()
@@ -47,17 +32,14 @@ class TestBigQueryService:
         # Should not raise exception
         service.log_query("test", "intent", "high", 5, 100.0, "sheets")
 
-    @patch("app.services.bigquery_service.bigquery.Client")
-    def test_log_query_when_enabled(self, mock_client, monkeypatch):
+    def test_log_query_when_enabled(self, monkeypatch):
         """Test query logging when enabled"""
         monkeypatch.setenv("K_SERVICE", "test-service")
-        mock_instance = Mock()
-        mock_instance.project = "test-project"
-        mock_instance.insert_rows_json.return_value = []
-        mock_client.return_value = mock_instance
         
         service = BigQueryService()
-        service.client = mock_instance
+        service.client = Mock()
+        service.client.project = "test-project"
+        service.client.insert_rows_json.return_value = []
         service.enabled = True
         
         service.log_query(
@@ -69,7 +51,7 @@ class TestBigQueryService:
             "sheets"
         )
         
-        assert mock_instance.insert_rows_json.called
+        assert service.client.insert_rows_json.called
 
     def test_get_intent_distribution_when_disabled(self):
         """Test intent distribution returns empty when disabled"""

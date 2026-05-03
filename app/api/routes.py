@@ -167,7 +167,7 @@ def _record_metrics(
             monitoring.record_intent_detection(intent, confidence)
             monitoring.record_cache_hit(cache_hit)
             monitoring.record_data_source(system_mode)
-    except Exception as exc:
+    except (ValueError, KeyError, AttributeError, RuntimeError) as exc:
         logger.debug("Failed to record monitoring metrics: %s", exc)
 
     # Log to Firestore
@@ -183,7 +183,7 @@ def _record_metrics(
                 response_time_ms=response_time_ms,
                 system_mode=system_mode
             )
-    except Exception as exc:
+    except (ValueError, KeyError, AttributeError, RuntimeError) as exc:
         logger.debug("Failed to log query to Firestore: %s", exc)
 
     # Log to BigQuery
@@ -200,7 +200,7 @@ def _record_metrics(
                 response_time_ms=response_time_ms,
                 system_mode=system_mode
             )
-    except Exception as exc:
+    except (ValueError, KeyError, AttributeError, RuntimeError) as exc:
         logger.debug("Failed to log query to BigQuery: %s", exc)
 
 
@@ -212,22 +212,32 @@ async def health_check() -> HealthResponse:
         mode = getattr(svc, "mode", "fallback")
         logger.debug("Health check requested — mode: %s", mode)
         return HealthResponse.create(mode=mode)
-    except Exception as exc:
+    except (ValueError, KeyError, AttributeError) as exc:
         logger.error("Health check error: %s", exc)
         return HealthResponse.create(mode="fallback")
 
 
-@router.get("/categories", response_model=CategoriesResponse, summary="List supported categories", tags=["metadata"])
+@router.get(
+    "/categories",
+    response_model=CategoriesResponse,
+    summary="List supported categories",
+    tags=["metadata"]
+)
 async def get_categories() -> CategoriesResponse:
     """Return all supported intent categories."""
     try:
         return CategoriesResponse.create(categories=get_supported_intents())
-    except Exception as exc:
+    except (ValueError, KeyError, AttributeError) as exc:
         logger.error("Error fetching categories: %s", exc)
         return CategoriesResponse.create(categories=["faq"])
 
 
-@router.post("/ask", response_model=QuestionResponse, summary="Ask an election question", tags=["questions"])
+@router.post(
+    "/ask",
+    response_model=QuestionResponse,
+    summary="Ask an election question",
+    tags=["questions"]
+)
 async def ask_question(request: QuestionRequest) -> QuestionResponse:
     """
     Process a user question and return a structured election-guidance response.
@@ -317,7 +327,7 @@ async def ask_question(request: QuestionRequest) -> QuestionResponse:
 
         return response
 
-    except Exception as exc:
+    except (ValueError, KeyError, AttributeError, RuntimeError) as exc:
         logger.error("Error processing question: %s", exc)
         try:
             fallback_data = fallback_service.get_category_data("faq")
@@ -337,7 +347,7 @@ async def ask_question(request: QuestionRequest) -> QuestionResponse:
                 "Google Cloud Storage are unavailable."
             )
             return response
-        except Exception as fatal:
+        except (ValueError, KeyError, AttributeError) as fatal:
             logger.critical("Fatal error in fallback handler: %s", fatal)
             return QuestionResponse(
                 category="faq",
@@ -433,7 +443,7 @@ async def debug_source() -> DebugSourceResponse:
             sheets_repaired_rows=sheets_repaired_rows,
             google_services_used=google_services,
         )
-    except Exception as exc:
+    except (ValueError, KeyError, AttributeError, RuntimeError) as exc:
         logger.error("Error in debug/source endpoint: %s", exc)
         return DebugSourceResponse(
             content_source="fallback",
