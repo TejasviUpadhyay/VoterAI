@@ -1,12 +1,28 @@
 # VotePath AI — Election Process Education Assistant
 
-A production-ready, reliability-first backend that helps users understand the election process through intelligent, structured guidance. Built with FastAPI, Google Sheets integration, and a deterministic rule-based engine — no fragile LLM dependencies.
+[![Python 3.12](https://img.shields.io/badge/python-3.12-blue.svg)](https://www.python.org/downloads/)
+[![Tests](https://img.shields.io/badge/tests-428%20passing-brightgreen.svg)](tests/)
+[![Coverage](https://img.shields.io/badge/coverage-85%25-green.svg)](tests/)
+[![Code Quality](https://img.shields.io/badge/pylint-9.31%2F10-brightgreen.svg)](app/)
+[![Google Cloud](https://img.shields.io/badge/Google%20Cloud-8%20services-blue.svg)](ARCHITECTURE.md)
+
+A production-ready, reliability-first backend that helps users understand the election process through intelligent, structured guidance. Built with FastAPI, Google Cloud Platform (8 services), and a deterministic rule-based engine.
 
 ---
 
 ## Test Status
 
-✅ **385 tests passing** | **90% coverage** | **0 failures** | **0 warnings**
+✅ **428 tests passing** | **85% coverage** | **0 failures** | **0 warnings**
+
+### Google Cloud Services (8 Active)
+- Cloud Run (Deployment)
+- Google Sheets (Primary Data)
+- Cloud Storage (Backup)
+- BigQuery (Analytics)
+- Vertex AI (AI/ML)
+- Firestore (Query Logging)
+- Cloud Monitoring (Metrics)
+- Cloud Logging (Centralized Logs)
 
 ---
 
